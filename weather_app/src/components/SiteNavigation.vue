@@ -14,6 +14,8 @@
         ></i>
         <i
           class="fa-solid fa-plus text-xl hover:text-weather-secondary duration-150 cursor-pointer"
+          @click="addCity"
+          v-if="route.query"
         ></i>
       </div>
       <BaseModal :modalActive="modalActive" @close-modal="toggleModal">
@@ -47,12 +49,38 @@
   </header>
 </template>
 
-<script setup lang="ts">
-import type { RouterLink } from 'vue-router'
+<script setup>
+import { useRoute, RouterLink, useRouter } from 'vue-router'
+import { uid } from 'uid'
 import BaseModal from './BaseModal.vue'
 import { ref } from 'vue'
 
 const modalActive = ref(false)
+const savedCities = ref([])
+const route = useRoute()
+const router = useRouter()
+
+const addCity = () => {
+  if (localStorage.getItem('savedCities')) {
+    savedCities.value = JSON.parse(localStorage.getItem('savedCities'))
+  }
+  const locationObj = {
+    id: uid(),
+    state: route.params.state,
+    city: route.params.city,
+    coords: {
+      lat: route.query.lat,
+      lng: route.query.lng
+    }
+  }
+  savedCities.value.push(locationObj)
+  localStorage.setItem('savedCities', JSON.stringify(savedCities.value))
+
+  //to delete preview key:valuer pair because we have set the preview to true and we are showing plus icon based on the preview condition
+  let query = Object.assign({}, route.query)
+  delete query.preview
+  router.replace({ query })
+}
 const toggleModal = () => {
   modalActive.value = !modalActive.value
 }
