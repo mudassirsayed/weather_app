@@ -79,6 +79,7 @@ const addCity = () => {
   //to delete preview key:valuer pair because we have set the preview to true and we are showing plus icon based on the preview condition
   let query = Object.assign({}, route.query)
   delete query.preview
+  query.id = locationObj.id
   router.replace({ query })
 }
 const toggleModal = () => {
