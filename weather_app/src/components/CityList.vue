@@ -32,6 +32,8 @@ const getCities = async () => {
     console.log(requests, 'REQUESTS')
     const weatherData = await Promise.all(requests)
 
+    //Time Flicker Delay - for the skeleto loader
+    await new Promise((res) => setTimeout(res, 1000))
     console.log(weatherData, 'WEATHERDATA')
     weatherData.forEach((value, index) => {
       savedCities.value[index].weather = value.data
